@@ -8,5 +8,6 @@ stevedore==5.7.0
 typing_extensions==4.15.0
 matplotlib==3.10.8
 pylatexenc==2.10
+1iskit_aer==0.17.2
 =======
 >>>>>>> 61555d0 (Implement array)
