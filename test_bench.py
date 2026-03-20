@@ -1,11 +1,17 @@
 from protocol import Protocol
+from array import Array
+from stack import Stack
 
 A = 1
 S = 3
 
 protocol = Protocol(A, S)
 qc = protocol.build_circuit()
+my_array = Array([1, 2, 3, 4], capacity=5, dtype=int)
+
 qc.draw('mpl', filename='misc/circuit.png')
-print(qc.draw(fold=-1))
-print("\n\n")
+
+print(my_array.isEmpty())
+my_array.append(5)
+print(my_array)
 

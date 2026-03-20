@@ -63,8 +63,3 @@ class Array:
 
     def contains(self, value):
         return value in self.elements
-
-my_array = Array([1, 2, 3, 4], capacity=5, dtype=int)
-my_array.isEmpty()
-my_array.append(5)
-print(my_array)
