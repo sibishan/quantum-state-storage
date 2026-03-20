@@ -1,12 +1,8 @@
-# michael will work on this stack data structure class
 class Stack:
     def __init__(self, items, capacity):
         self.items = items
         self.capacity = capacity
         self.top = -1
-
-    def __repr__(self):
-        return f"Stack({self.items}, capacity={self.capacity})"
 
     def push(self, item):
         if len(self.items) >= self.capacity:
