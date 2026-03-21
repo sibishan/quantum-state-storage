@@ -7,8 +7,7 @@ class QArray:
         self.lookup = {}
         for i in range(self.num_qubits):
             self.lookup[i] = {
-                'a': False,
-                's': False,
+                'status': ''
             }
         self.size = 0
         self.protocol = Protocol(self.num_qubits, self.num_clones)
@@ -25,7 +24,7 @@ class QArray:
             raise IndexError("c_index out of bounds")
         
         self.protocol.retrieve_qubit(a_index, c_index)
-        self.lookup[a_index]['s'] = False
+        self.lookup[a_index]['status'] = "get"
 
     def set(self, index=None, qc=None):
         if self._get_qc:
@@ -38,9 +37,8 @@ class QArray:
             raise IndexError("index out of bounds")
         
         self.protocol.store_qubit(qc, index)
+        self.lookup[index]['status'] = "set"
         self.size += 1
-        self.lookup[index]['a'] = True
-        self.lookup[index]['s'] = True
 
     def draw(self):
         return self.protocol.qc.draw(output='mpl', fold=-1)
@@ -60,11 +58,16 @@ class QArray:
             raise IndexError("index out of bounds")
         
         for i in range(index, self.size):
-            self.protocol.retrieve_qubit(i, 0)
+            if self.lookup[i]['status'] == "set":
+                 self.protocol.retrieve_qubit(i, 0)
         for i in range(self.size-1, index-1, -1):
             self.protocol.swap_a(i, i+1)
+            temp = self.lookup[i]['status']
+            self.lookup[i]['status'] = self.lookup[i-1]['status']
+            self.lookup[i-1]['status'] = temp
         for i in range(index+1, self.size+1):
-            self.protocol.store_qubit(qc=None, index=i)
+            if self.lookup[i]['status'] == "set":
+                self.protocol.store_qubit(qc=None, index=i)
         
         self.protocol.store_qubit(qc, index)
         self.size += 1
