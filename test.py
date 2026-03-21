@@ -7,40 +7,41 @@ from qiskit.quantum_info import (
     partial_trace, state_fidelity
 )
 
-A = 2
+A = 3
 S = 3
 
-# stack = QStack(num_qubits=A, num_clones=S)
-
-# a = QuantumCircuit(1)
-# psi = random_statevector(2)
-# a.initialize(psi, 0)
-
-# print(stack.size())
-# stack.push(a)
-# print(stack.size())
-# stack.pop()
-# print(stack.size())
-# # qc = stack.generate_circuit()
-# stack.push(a)
-# print(stack.size())
-
-# img = stack.draw()
-# img.savefig('misc/circuit.png', bbox_inches='tight')
-
-array = QArray(num_qubits=A, num_clones=S)
+stack = QStack(num_qubits=A, num_clones=S)
 
 a = QuantumCircuit(1)
 psi = random_statevector(2)
 a.initialize(psi, 0)
 
-array.set(0, a)
-array.set(1, a)
-array.get(0)
-array.get(1, 2)
+stack.push(a)
+stack.pop()
+# qc = stack.generate_circuit()
+stack.push(a)
+stack.push(a)
+stack.pop()
+stack.pop()
 
-qc = array.generate_circuit()
-array.set(1, a)
 
-img = array.draw()
+
+img = stack.draw()
 img.savefig('misc/circuit.png', bbox_inches='tight')
+
+# array = QArray(num_qubits=A, num_clones=S)
+
+# a = QuantumCircuit(1)
+# psi = random_statevector(2)
+# a.initialize(psi, 0)
+
+# array.set(0, a)
+# array.set(0, a)
+# array.get(0)
+# array.get(1, 2)
+
+# qc = array.generate_circuit()
+# array.set(1, a)
+
+# img = array.draw()
+# img.savefig('misc/circuit.png', bbox_inches='tight')

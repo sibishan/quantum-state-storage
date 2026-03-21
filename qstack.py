@@ -4,6 +4,11 @@ class QStack:
     def __init__(self, num_qubits=0, num_clones=0):
         self.num_qubits = num_qubits
         self.num_clones = num_clones
+        self.lookup = {}
+        for i in range(self.num_qubits):
+            self.lookup[i] = {
+                'flag': False,
+            }
         self.size = 0
         self.protocol = Protocol(self.num_qubits, self.num_clones)
         self._get_qc = False
@@ -19,6 +24,7 @@ class QStack:
             raise OverflowError("QStack Overflow")
         
         self.protocol.store_qubit(qc, self.size)
+        self.lookup[self.size]['flag'] = True
         self.size += 1
 
     def pop(self, c_index=0):
@@ -29,8 +35,14 @@ class QStack:
         if c_index >= self.num_clones or c_index < 0:
             raise ValueError("c_index out of bounds")
         
-        temp = self.size - 1
-        self.protocol.retrieve_qubit(temp)
+        idx = 0
+        for i in range(self.size-1, -1, -1):
+            if self.lookup[i]['flag']:
+                idx = i
+                break
+        
+        self.protocol.retrieve_qubit(idx, c_index)
+        self.lookup[idx]['flag'] = False
     
     def draw(self):
         return self.protocol.qc.draw(output='mpl', fold=-1)
@@ -45,7 +57,7 @@ class QStack:
     def is_full(self):
         return self.size == self.num_qubits
     
-    def size(self):
+    def get_size(self):
         return self.size
     
     def clear(self):

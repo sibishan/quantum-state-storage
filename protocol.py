@@ -73,7 +73,7 @@ class Protocol:
         if c_index < 0 or c_index >= n:
             raise IndexError(f"Clone index {c_index} out of bounds")
         if not self._s_in_use(a_index, c_index) or not self._n_in_use(a_index, c_index):
-            raise ValueError(f"Clone S_{a_index}_{c_index} qubits not in use")
+            raise ValueError(f"Clone already decrypted or never stored")
         
         sigma = [
             np.eye(2, dtype=complex),                           # σ_0 = I
