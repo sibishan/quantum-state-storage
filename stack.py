@@ -6,11 +6,14 @@ class QStack:
         self.num_clones = num_clones
         self.capacity = 0
         self.protocol = Protocol(self.num_qubits, self.num_clones)
+        self._get_qc = False
     
     def draw(self):
-        return self.protocol.qc.draw(fold=-1)
+        return self.protocol.qc.draw(output='mpl', fold=-1)
 
     def push(self, qc=None):
+        if self._get_qc:
+            raise RuntimeError("Cannot push qubits after finalising the protocol circuit")
         if qc is None:
             raise ValueError("Input circuit cannot be None")
         if qc.num_qubits != 1:
@@ -21,17 +24,23 @@ class QStack:
         self.protocol.store_qubit(qc, self.capacity)
         self.capacity += 1
 
-    def pop(self, index=0):
+    def pop(self, c_index=0):
+        if self._get_qc:
+            raise RuntimeError("Cannot pop qubits after finalising the protocol circuit")
         if self.isEmpty():
             raise IndexError("QStack is empty")
-        if index >= self.num_clones:
+        if c_index >= self.num_clones or c_index < 0:
             raise ValueError("Invalid clone index")
-        self.protocol.decrypt_clone(self.capacity)
-        self.capacity -= 1
-        return self.items.pop()
+        
+        temp = self.capacity - 1
+        self.protocol.retrieve_qubit(temp)
 
-    # def isEmpty(self):
-    #     return len(self.items) == 0
+    def isEmpty(self):
+        return self.capacity == 0
+    
+    def generate_circuit(self):
+        self._get_qc = True
+        return self.protocol.get_qc()
 
-    # def size(self):
-    #     return len(self.items)
+    def size(self):
+        return len(self.capacity)

@@ -6,7 +6,7 @@ from qiskit.quantum_info import (
     partial_trace, state_fidelity
 )
 
-A = 2
+A = 3
 S = 3
 
 stack = QStack(num_qubits=A, num_clones=S)
@@ -16,7 +16,14 @@ psi = random_statevector(2)
 a.initialize(psi, 0)
 
 stack.push(a)
+stack.pop()
+# qc = stack.generate_circuit()
+stack.push(a)
+stack.pop()
 
-print(stack.draw())
+stack.push(a)
+stack.pop()
 
+img = stack.draw()
+img.savefig('misc/circuit.png', bbox_inches='tight')
 
