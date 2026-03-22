@@ -40,7 +40,7 @@ class QArray:
         
         self.protocol.store_qubit(qc, index)
         self.lookup[index]['status'] = "set"
-        self.size += 1
+        self.size = max(self.size, index + 1)
 
     def draw(self):
         return self.protocol.qc.draw(output='mpl', fold=-1)
@@ -111,12 +111,27 @@ class QArray:
                 self.protocol.store_qubit(qc=None, index=i)
         
 
-    # def reverse(self):
-    #     self.elements.reverse()
+    def reverse(self):
+        if self._get_qc:
+            raise RuntimeError("Cannot reverse qubits after finalising the protocol circuit")
+        
+        for i in range(self.size):
+            if self.lookup[i]['status'] == "set":
+                self.protocol.retrieve_qubit(i, 0)
+        for i in range(self.size // 2):
+            j = self.size - 1 - i
+            self.protocol.swap_a(i, j)
+            temp = self.lookup[i]['status']
+            self.lookup[i]['status'] = self.lookup[j]['status']
+            self.lookup[j]['status'] = temp
+        for i in range(self.size):
+            if self.lookup[i]['status'] == "set":
+                self.protocol.store_qubit(qc=None, index=i)
+            
+        
 
     # def clear(self):
-    #     self.elements = []
-    #     self.size = 0
+
 
     # def is_empty(self):
     #     return self.size == 0
