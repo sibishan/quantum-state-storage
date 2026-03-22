@@ -35,6 +35,8 @@ class QArray:
             raise ValueError("Input must be a single-qubit circuit")
         if index >= self.num_qubits or index < 0:
             raise IndexError("index out of bounds")
+        if self.lookup[index]['status'] == "set" or self.lookup[index]['status'] == "get":
+            raise IndexError(f"Qubit A_{index} already in use")
         
         self.protocol.store_qubit(qc, index)
         self.lookup[index]['status'] = "set"

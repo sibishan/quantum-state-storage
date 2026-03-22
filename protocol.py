@@ -52,12 +52,8 @@ class Protocol:
             if self._s_in_use(index, i) or self._n_in_use(index, i):
                 flag = True
                 break
-        if flag:
-            if self._a_in_use(index):
+        if flag and self._a_in_use(index):
                 raise IndexError(f"Qubit A_{index} already in use with clones")
-        else:
-            if self._a_in_use(index):
-                raise IndexError(f"Qubit A_{index} already occupied without clones")
 
         if qc is not None:
             self.qc = self.qc.compose(qc, qubits=[self._a(index)])
