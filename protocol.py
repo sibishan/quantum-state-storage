@@ -120,6 +120,9 @@ class Protocol:
             self.qc.reset(self._s(a_index, i))
             self._s_in_use(a_index, i, False)
             self._n_in_use(a_index, i, False)
+        for i in range(self.num_clones):
+                self.qc.h(self._s(a_index, i))
+                self.qc.cx(self._s(a_index, i), self._n(a_index, i))
         
         self.qc.barrier()
     
@@ -131,6 +134,22 @@ class Protocol:
         temp = self._a_in_use(p)
         self._a_in_use(p, self._a_in_use(q))
         self._a_in_use(q, temp)
+    
+    def uncompute_a(self, index):
+        if not self._a_in_use(index):
+            raise ValueError(f"Qubit A_{index} has nothing stored")
+
+        self.qc.reset(self._a(index))
+        self._a_in_use(index, False)
+        for i in range(self.num_clones):
+            if self._s_in_use(index, i) or self._n_in_use(index, i):
+                self.qc.reset(self._s(index, i))
+                self.qc.reset(self._n(index, i))
+                self._s_in_use(index, i, False)
+                self._n_in_use(index, i, False)
+        for i in range(self.num_clones):
+                self.qc.h(self._s(index, i))
+                self.qc.cx(self._s(index, i), self._n(index, i))
 
     def get_qc(self):
         return self.qc

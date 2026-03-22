@@ -88,12 +88,28 @@ class QArray:
         self.lookup[self.size]['status'] = "set"
         self.size += 1
 
-    # def remove(self, value):
-    #     if value in self.elements:
-    #         self.elements.remove(value)
-    #         self.size -= 1
-    #     else:
-    #         raise ValueError("value not in array")
+    def remove(self, index=None):
+        if self._get_qc:
+            raise RuntimeError("Cannot remove qubits after finalising the protocol circuit")
+        if index is None:
+            raise ValueError("index cannot be Null")
+        if index >= self.size or index < 0:
+            raise IndexError("index out of bounds")
+        
+        self.protocol.uncompute_a(index)
+        self.lookup[index]['status'] = ""
+        for i in range(index+1, self.size):
+            if self.lookup[i]['status'] == "set":
+                self.protocol.retrieve_qubit(i, 0)
+        for i in range(index, self.size):
+            self.protocol.swap_a(i, i+1)
+            temp = self.lookup[i]['status']
+            self.lookup[i]['status'] = self.lookup[i+1]['status']
+            self.lookup[i+1]['status'] = temp
+        for i in range(index, self.size-1):
+            if self.lookup[i]['status'] == "set":
+                self.protocol.store_qubit(qc=None, index=i)
+        
 
     # def reverse(self):
     #     self.elements.reverse()
