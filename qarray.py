@@ -66,7 +66,7 @@ class QArray:
         for i in range(index, self._tail):
             if self.lookup[i]['status'] == "set":
                  self.protocol.retrieve_qubit(i, 0)
-        for i in range(self._tail - 2, index - 1, -1):
+        for i in range(self._tail - 1, index - 1, -1):
             self.protocol.swap_a(i, i + 1)
             temp = self.lookup[i]['status']
             self.lookup[i]['status'] = self.lookup[i + 1]['status']
