@@ -141,7 +141,7 @@ class QArray:
         return self.size == 0
     
     def is_full(self):
-        return self._tail >= self.num_qubits
+        return self.size >= self.num_qubits
 
     def clear(self):
         self.size = 0
