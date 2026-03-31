@@ -349,9 +349,69 @@ def test_16_with_clones():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  TEST 17 — Append grows the array
+#  Expected: [] → [A] → [A, B] → [A, B, C]
+# ═══════════════════════════════════════════════════════════════════════════
+ 
+def test_17_append():
+    print("\n── Test 17: Append ──")
+    arr = QArray(num_qubits=3, num_clones=1)
+    A, B, C = [make_state(l) for l in "ABC"]
+ 
+    save(arr, "17_append", "0_empty")
+ 
+    arr.append(A)
+    save(arr, "17_append", "1_A")
+ 
+    arr.append(B)
+    save(arr, "17_append", "2_A_B")
+ 
+    arr.append(C)
+    save(arr, "17_append", "3_A_B_C")
+ 
+ 
+# ═══════════════════════════════════════════════════════════════════════════
+#  TEST 18 — Append then reverse
+#  Expected: append A,B,C → [A, B, C] → reverse → [C, B, A]
+# ═══════════════════════════════════════════════════════════════════════════
+ 
+def test_18_append_then_reverse():
+    print("\n── Test 18: Append then reverse ──")
+    arr = QArray(num_qubits=3, num_clones=1)
+    A, B, C = [make_state(l) for l in "ABC"]
+ 
+    arr.append(A)
+    arr.append(B)
+    arr.append(C)
+    save(arr, "18_append_reverse", "0_A_B_C")
+ 
+    arr.reverse()
+    save(arr, "18_append_reverse", "1_C_B_A")
+ 
+ 
+# ═══════════════════════════════════════════════════════════════════════════
+#  TEST 19 — Append then remove
+#  Expected: append A,B,C → [A, B, C] → remove(1) → [A, C]
+# ═══════════════════════════════════════════════════════════════════════════
+ 
+def test_19_append_then_remove():
+    print("\n── Test 19: Append then remove ──")
+    arr = QArray(num_qubits=3, num_clones=1)
+    A, B, C = [make_state(l) for l in "ABC"]
+ 
+    arr.append(A)
+    arr.append(B)
+    arr.append(C)
+    save(arr, "19_append_remove", "0_A_B_C")
+ 
+    arr.remove(1)
+    save(arr, "19_append_remove", "1_A_C")
+ 
+ 
+# ═══════════════════════════════════════════════════════════════════════════
 #  RUN ALL
 # ═══════════════════════════════════════════════════════════════════════════
-
+ 
 if __name__ == "__main__":
     tests = [
         test_01_set_single,
@@ -370,11 +430,14 @@ if __name__ == "__main__":
         test_14_reverse_then_set,
         test_15_full_lifecycle,
         test_16_with_clones,
+        test_17_append,
+        test_18_append_then_reverse,
+        test_19_append_then_remove,
     ]
-
+ 
     os.makedirs(OUT_DIR, exist_ok=True)
     passed, failed = 0, 0
-
+ 
     for t in tests:
         try:
             t()
@@ -382,8 +445,9 @@ if __name__ == "__main__":
         except Exception as e:
             failed += 1
             print(f"  ✗ FAILED: {e}")
-
+ 
     print(f"\n{'='*50}")
     print(f"  {passed} passed, {failed} failed out of {len(tests)} tests")
     print(f"  Images saved to: {OUT_DIR}/")
     print(f"{'='*50}")
+ 
