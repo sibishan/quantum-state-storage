@@ -21,8 +21,10 @@ def save(array, test_name: str, step: str):
     """Draw the array circuit and save to tests/out/qarray/<test>/<step>.png"""
     path = os.path.join(OUT_DIR, test_name)
     os.makedirs(path, exist_ok=True)
+    import matplotlib.pyplot as plt
     fig = array.draw()
     fig.savefig(os.path.join(path, f"{step}.png"), bbox_inches="tight")
+    plt.close(fig)
     print(f"  saved: {path}/{step}.png")
 
 
@@ -234,7 +236,7 @@ def test_11_insert_middle():
 
 # ═══════════════════════════════════════════════════════════════════════════
 #  TEST 12 — Get does not mutate
-#  Expected: circuit before and after get() should look identical
+#  Expected: circuit before and after get(index) should retrive the state to qubit A{index}
 # ═══════════════════════════════════════════════════════════════════════════
 
 def test_12_get_no_mutate():
@@ -291,7 +293,7 @@ def test_14_reverse_then_set():
     arr.reverse()
     save(arr, "14_reverse_set", "1_C_B_A")
 
-    arr.set(0, X)
+    arr.set(0, X) # this should fail because index 0 alr holds a qubit
     save(arr, "14_reverse_set", "2_X_B_A")
 
 

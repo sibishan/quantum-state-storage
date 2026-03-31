@@ -71,7 +71,7 @@ class QArray:
             temp = self.lookup[i]['status']
             self.lookup[i]['status'] = self.lookup[i + 1]['status']
             self.lookup[i + 1]['status'] = temp
-        for i in range(index + 1, self._tail):
+        for i in range(index + 1, self._tail + 1):
             if self.lookup[i]['status'] == "set":
                 self.protocol.store_qubit(qc=None, index=i)
         
